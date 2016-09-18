@@ -1,4 +1,6 @@
+#include <QDebug>
 #include <QDir>
+#include <QFile>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -45,6 +47,13 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("1.0.0");
 
     QVariantMap args = parseArguments(app);
+
+    QString launcherDir = args["launcherDir"].toString();
+    qDebug() << "launcherDir:" << launcherDir;
+    if (!QFile::exists(launcherDir)) {
+        qCritical() << "launcherDir does not exist";
+        return 1;
+    }
 
     QQmlApplicationEngine engine;
     qmlRegisterType<LauncherModel>("CouchRocket", 1, 0, "LauncherModel");
