@@ -1,5 +1,6 @@
 #include "launcher.h"
 
+#include <QDebug>
 #include <QProcess>
 #include <QSettings>
 
@@ -28,5 +29,6 @@ QUrl Launcher::iconUrl() const
 
 void Launcher::launch() const
 {
+    qDebug() << "Launching" << mExec;
     QProcess::startDetached(mExec);
 }
