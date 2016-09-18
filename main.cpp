@@ -9,7 +9,7 @@
 
 static QString getDefaultLauncherDir()
 {
-    return QDir::home().filePath(".local/couchrocket/launchers");
+    return QDir::home().filePath(".local/share/couchrocket/launchers");
 }
 
 QVariantMap parseArguments(const QCoreApplication& app)
