@@ -1,6 +1,7 @@
 import QtQuick 2.5
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
+import QtGamepad 1.0
 
 import CouchRocket 1.0
 
@@ -91,6 +92,32 @@ Window {
                 launcherModel.launch(0);
             }
         }
+    }
+
+    Connections {
+        target: GamepadManager
+        onGamepadConnected: gamepad.deviceId = deviceId
+    }
+
+    Gamepad {
+        id: gamepad
+        deviceId: GamepadManager.connectedGamepads.length > 0 ? GamepadManager.connectedGamepads[0] : -1
+    }
+
+    GamepadKeyNavigation {
+        id: gamepadKeyNavigation
+        gamepad: gamepad
+        active: true
+        buttonAKey: Qt.Key_Return
+        buttonBKey: Qt.Key_Return
+        buttonXKey: Qt.Key_Return
+        buttonYKey: Qt.Key_Return
+        buttonL1Key: Qt.Key_Return
+        buttonL2Key: Qt.Key_Return
+        buttonL3Key: Qt.Key_Return
+        buttonR1Key: Qt.Key_Return
+        buttonR2Key: Qt.Key_Return
+        buttonR3Key: Qt.Key_Return
     }
 }
 
