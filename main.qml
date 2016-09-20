@@ -38,17 +38,13 @@ ApplicationWindow {
     Item {
         id: main
         anchors.fill: parent
-        ListView {
+        GridView {
             id: launcherView
             model: launcherModel
-            anchors {
-                left: parent.left
-                right: parent.right
-                verticalCenter: parent.verticalCenter
-            }
-            height: 256
+            anchors.fill: parent
             focus: true
-            orientation: Qt.Horizontal
+            cellWidth: 300
+            cellHeight: cellWidth
 
             delegate: LauncherItem {
                 Keys.onPressed: {
