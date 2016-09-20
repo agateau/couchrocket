@@ -3,21 +3,23 @@ TEMPLATE = app
 QT += qml quick quickcontrols2
 CONFIG += c++11
 
-SOURCES += main.cpp \
-    launchermodel.cpp \
-    launcher.cpp \
-    iconpixmapprovider.cpp
+SOURCES += src/core/main.cpp \
+    src/core/launchermodel.cpp \
+    src/core/launcher.cpp \
+    src/core/iconpixmapprovider.cpp \
 
-RESOURCES += qml.qrc
+INCLUDEPATH += src/core
+
+RESOURCES += src/ui/qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
+QML_IMPORT_PATH = src/ui
 
 # Default rules for deployment.
 include(deployment.pri)
 
 HEADERS += \
-    launchermodel.h \
-    launcher.h \
-    iconpixmapprovider.h
+    src/core/launchermodel.h \
+    src/core/launcher.h \
+    src/core/iconpixmapprovider.h \
 
