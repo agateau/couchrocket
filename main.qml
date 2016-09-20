@@ -36,6 +36,7 @@ ApplicationWindow {
     }
 
     Item {
+        id: main
         anchors.fill: parent
         ListView {
             id: launcherView
@@ -61,6 +62,8 @@ ApplicationWindow {
             highlight: Highlight {
             }
             highlightMoveDuration: 200
+
+            KeyNavigation.down: powerButton
         }
 
         Label {
@@ -82,6 +85,23 @@ ApplicationWindow {
                     }
                 }
             ]
+        }
+
+        Button {
+            id: powerButton
+            KeyNavigation.up: launcherView
+
+            anchors {
+                bottom: main.bottom
+                left: main.left
+            }
+
+            Image {
+                source: "qrc:/images/power.svg"
+                width: 32
+                height: width
+                anchors.centerIn: parent
+            }
         }
     }
 

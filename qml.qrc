@@ -6,5 +6,6 @@
         <file>Style.qml</file>
         <file>qmldir</file>
         <file>Highlight.qml</file>
+        <file>images/power.svg</file>
     </qresource>
 </RCC>
