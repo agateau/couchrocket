@@ -1,16 +1,19 @@
 import QtQuick 2.5
-import QtQuick.Window 2.2
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.1
 
 import CouchRocket 1.0
 
-Item {
+import "."
+
+ItemDelegate {
     signal launchRequested
 
     property int margin: 12
 
     width: column.width + 2 * margin
     height: column.height + 2 * margin
+
     ColumnLayout {
         id: column
         x: margin
@@ -23,11 +26,12 @@ Item {
             source: model.decoration
             Layout.alignment: Qt.AlignHCenter
         }
-        Text {
+        Label {
             text: model.display
             wrapMode: Text.WordWrap
-            Layout.alignment: Qt.AlignHCenter
-            color: "white"
+            Layout.fillWidth: true
+            horizontalAlignment: Qt.AlignHCenter
+            color: Style.main.textColor
             maximumLineCount: 2
         }
     }

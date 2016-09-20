@@ -3,5 +3,8 @@
         <file>main.qml</file>
         <file>LauncherItem.qml</file>
         <file>images/rocket.svg</file>
+        <file>Style.qml</file>
+        <file>qmldir</file>
+        <file>Highlight.qml</file>
     </qresource>
 </RCC>

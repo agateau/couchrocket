@@ -1,11 +1,15 @@
 import QtQuick 2.5
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
+import QtQuick.Controls 2.0
+
 import QtGamepad 1.0
 
 import CouchRocket 1.0
 
-Window {
+import "."
+
+ApplicationWindow {
     id: root
 
     title: "Couch Rocket"
@@ -13,7 +17,8 @@ Window {
     width: 800
     height: 600
 
-    color: "black"
+    color: Style.main.backgroundColor
+    font.pixelSize: Style.main.textSize
 
     property int autoStartCountDown: 5
 
@@ -53,20 +58,18 @@ Window {
                 }
             }
 
-            highlight: Rectangle {
-                color: "#308cc6"
-                radius: 5
+            highlight: Highlight {
             }
             highlightMoveDuration: 200
         }
 
-        Text {
+        Label {
             id: countDownText
             anchors {
                 bottom: parent.bottom
                 horizontalCenter: parent.horizontalCenter
             }
-            color: "white"
+            color: Style.main.textColor
             visible: false
             states: [
                 State {
