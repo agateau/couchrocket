@@ -7,7 +7,7 @@
 
 static QPixmap scalePix(const QPixmap &fg_, const QSize &size)
 {
-    QPixmap fg = fg_.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QPixmap fg = fg_.scaled(size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
     QPixmap pix(size);
     pix.fill(Qt::transparent);
     QPainter painter(&pix);
