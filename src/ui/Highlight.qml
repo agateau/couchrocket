@@ -4,5 +4,5 @@ import "."
 
 Rectangle {
     color: Style.main.selectedColor
-    radius: 5
+    radius: Style.grid.highlightRadius
 }

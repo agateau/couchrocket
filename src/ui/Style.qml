@@ -10,4 +10,10 @@ QtObject {
 
         property color selectedColor: "#308cc6"
     }
+
+    property QtObject grid: QtObject {
+        property int iconSize: 256
+        property int highlightSize: 12
+        property int highlightRadius: 6
+    }
 }

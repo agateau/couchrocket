@@ -9,27 +9,28 @@ import "."
 ItemDelegate {
     signal launchRequested
 
-    property int margin: 12
+    property int margin: Style.grid.highlightSize
+    property int iconSize: Style.grid.iconSize
 
     width: column.width + 2 * margin
     height: column.height + 2 * margin
 
-    ColumnLayout {
+    Column {
         id: column
         x: margin
         y: margin
+        width: iconSize
         Image {
-            width: 256
-            height: width
-            sourceSize.width: width
-            sourceSize.height: width
+            width: iconSize
+            sourceSize.width: iconSize
+            sourceSize.height: iconSize
             source: model.decoration
-            Layout.alignment: Qt.AlignHCenter
         }
         Label {
+            width: iconSize
             text: model.display
+            elide: "ElideRight"
             wrapMode: Text.WordWrap
-            Layout.fillWidth: true
             horizontalAlignment: Qt.AlignHCenter
             color: Style.main.textColor
             maximumLineCount: 2

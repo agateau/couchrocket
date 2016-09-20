@@ -43,7 +43,7 @@ ApplicationWindow {
             model: launcherModel
             anchors.fill: parent
             focus: true
-            cellWidth: 300
+            cellWidth: Style.grid.iconSize + 3 * Style.grid.highlightSize + 2 * Style.main.textSize
             cellHeight: cellWidth
 
             delegate: LauncherItem {
