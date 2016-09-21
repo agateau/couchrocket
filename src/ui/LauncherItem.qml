@@ -29,7 +29,7 @@ ItemDelegate {
         Label {
             width: iconSize
             text: model.display
-            elide: "ElideRight"
+            elide: Text.ElideRight
             wrapMode: Text.WordWrap
             horizontalAlignment: Qt.AlignHCenter
             color: Style.main.textColor
