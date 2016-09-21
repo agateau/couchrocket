@@ -28,7 +28,7 @@ Icon={snap}
 """
 
 
-BLACK_LIST = {"neogeo"}
+BLACK_LIST = {"neogeo", "qsound"}
 
 
 def create_title_for_rom_dict(mame):
