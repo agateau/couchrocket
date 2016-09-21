@@ -60,20 +60,15 @@ ApplicationWindow {
             highlightMoveDuration: 200
         }
 
-        Label {
-            id: countDownText
-            anchors {
-                bottom: parent.bottom
-                horizontalCenter: parent.horizontalCenter
-            }
-            color: Style.main.textColor
+        ToastLabel {
+            id: countDownToast
             visible: false
             states: [
                 State {
                     name: "countDown"
                     when: root.autoStartCountDown >= 0 && launcherView.count > 0
                     PropertyChanges {
-                        target: countDownText
+                        target: countDownToast
                         visible: true
                         text: qsTr("Starting %1 in %2...").arg(launcherModel.get(0).display).arg(root.autoStartCountDown)
                     }
