@@ -51,13 +51,13 @@ class App:
     def __init__(self, config):
         self.config = config
         self.title_for_rom = create_title_for_rom_dict(config.mame)
-        
+
     def process_dir(self, dirname):
         for filename in os.listdir(dirname):
             if filename.endswith('.zip'):
                 print('Processing {}'.format(filename))
                 self.process_file(os.path.join(dirname, filename))
-            
+
     def process_file(self, filename):
         rom = os.path.basename(os.path.splitext(filename)[0])
         if not rom in self.title_for_rom:
@@ -68,20 +68,20 @@ class App:
             return
         snap_path = self.download_snap(rom)
         self.create_desktop(rom, snap_path)
-        
+
     def download_snap(self, rom):
         snap_path = os.path.join(self.config.snaps, rom + '.png')
         if os.path.exists(snap_path):
             print('Snap has already been downloaded')
             return snap_path
-        
+
         url = SNAPS_URL.format(rom=rom)
         print('Downloading snap from {}'.format(url))
         with urlopen(url) as srcf:
             with open(snap_path, 'wb') as dstf:
                 dstf.write(srcf.read())
         return snap_path
-    
+
     def create_desktop(self, rom, snap_path):
         title = self.title_for_rom[rom]
         desktop_path = os.path.join(self.config.destination, slugify(title) + '.desktop')
@@ -99,7 +99,7 @@ def main():
 
     parser.add_argument('-s', '--snaps', dest='snaps',
         help='Path to the snaps dir')
-    
+
     parser.add_argument('-d', '--destination', dest='destination', default=os.getcwd(),
         help='Destination dir, defaults to current directory')
 
@@ -108,7 +108,7 @@ def main():
     args = parser.parse_args()
     if not os.path.isdir(args.snaps):
         parser.error('Snaps dir does not exist')
-        
+
     config = Config(mame=args.mame, snaps=args.snaps, destination=args.destination)
     app = App(config)
 
