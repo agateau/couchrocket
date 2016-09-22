@@ -57,7 +57,7 @@ ApplicationWindow {
                     root.autoStartCountDown = -1;
                 }
                 onLaunchRequested: {
-                    launcherModel.launch(model.index);
+                    launch();
                 }
             }
         }
@@ -86,9 +86,14 @@ ApplicationWindow {
         onTriggered: {
             root.autoStartCountDown--;
             if (root.autoStartCountDown == 0) {
-                launcherModel.launch(0);
+                launch();
             }
         }
+    }
+
+    function launch() {
+        launcherView.currentItem.aboutToLaunch();
+        launcherModel.launch(launcherView.currentIndex);
     }
 
     Connections {

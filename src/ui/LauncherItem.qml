@@ -13,6 +13,13 @@ ItemDelegate {
     width: GridView.view.cellWidth
     height: GridView.view.cellHeight
 
+    function aboutToLaunch() {
+        var feedback = launchFeedback.createObject(GridView.view);
+        var coord = GridView.view.mapFromItem(image, 0, 0);
+        feedback.x = coord.x;
+        feedback.y = coord.y;
+    }
+
     Rectangle {
         color: root.GridView.isCurrentItem ? "#555" : "#222"
         anchors {
@@ -68,5 +75,39 @@ ItemDelegate {
     }
     Keys.onSpacePressed: {
         launchRequested();
+    }
+
+    Component {
+        id: launchFeedback
+        Image {
+            id: launchImage
+            width: Style.grid.iconSize
+            sourceSize.width: width
+            sourceSize.height: width
+            source: model.decoration
+
+            SequentialAnimation {
+                running: true
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: launchImage
+                        property: "scale"
+                        to: 5
+                        duration: 200
+                    }
+                    NumberAnimation {
+                        target: launchImage
+                        property: "opacity"
+                        to: 0
+                        duration: 200
+                    }
+                }
+                ScriptAction {
+                    script: {
+                        launchImage.destroy();
+                    }
+                }
+            }
+        }
     }
 }
