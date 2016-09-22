@@ -5,20 +5,24 @@
 #include <QProcess>
 #include <QTextStream>
 
-static constexpr char GROUP_START[] = "[Desktop Entry]";
+static constexpr char DESKTOP_ENTRY_GROUP[] = "[Desktop Entry]";
 
 static QHash<QString, QString> readDesktopFile(QIODevice *device)
 {
     QTextStream stream(device);
     QHash<QString, QString> hash;
-    bool reachedStart = false;
+    bool inDesktopEntryGroup = false;
     while (!stream.atEnd()) {
         QString line = stream.readLine().trimmed();
         // Skip empty lines and comments
         if (line.isEmpty() || line[0] == '#') {
             continue;
         }
-        if (reachedStart) {
+        if (inDesktopEntryGroup) {
+            if (line.at(0) == '[') {
+                // We reached the beginning of a new group
+                break;
+            }
             int idx = line.indexOf('=');
             if (idx == -1) {
                 qWarning() << "Invalid line" << line;
@@ -28,8 +32,8 @@ static QHash<QString, QString> readDesktopFile(QIODevice *device)
             QString value = line.mid(idx + 1).trimmed();
             hash[key] = value;
         } else {
-            if (line == GROUP_START) {
-                reachedStart = true;
+            if (line == DESKTOP_ENTRY_GROUP) {
+                inDesktopEntryGroup = true;
             }
         }
     }
