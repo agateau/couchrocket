@@ -4,10 +4,7 @@ import os
 import subprocess
 import sys
 
-from collections import namedtuple
-from urllib.request import urlopen
-
-from slugify import slugify
+import desktopgenerator
 
 
 SNAPS_URL = 'http://www.mamedb.com/snap/{rom}.png'
@@ -15,16 +12,6 @@ SNAPS_URL = 'http://www.mamedb.com/snap/{rom}.png'
 
 DESCRIPTION = """\
 Generates .desktop files to start Mame roms.
-"""
-
-Config = namedtuple('Config', ['mame', 'snaps', 'destination'])
-
-
-DESKTOP_TEMPLATE = """[Desktop Entry]
-Version=1.0
-Name={title}
-Exec={mame} {rom}
-Icon={snap}
 """
 
 
@@ -41,53 +28,29 @@ def create_title_for_rom_dict(mame):
             first = False
             continue
         rom, title = line.strip().split(' ', 1)
+        if rom in BLACK_LIST:
+            continue
         title = title.strip('" ')  # Remove leading spaces and enclosing double quotes
         dct[rom] = title
     print('Done')
     return dct
 
 
-class App:
+class App(desktopgenerator.App):
+    EXTENSION = '.zip'
+
     def __init__(self, config):
-        self.config = config
-        self.title_for_rom = create_title_for_rom_dict(config.mame)
+        desktopgenerator.App.__init__(self, config)
+        self.title_for_rom = create_title_for_rom_dict(config.command)
 
-    def process_dir(self, dirname):
-        for filename in os.listdir(dirname):
-            if filename.endswith('.zip'):
-                print('Processing {}'.format(filename))
-                self.process_file(os.path.join(dirname, filename))
+    def is_rom(self, rom):
+        return rom in self.title_for_rom
 
-    def process_file(self, filename):
-        rom = os.path.basename(os.path.splitext(filename)[0])
-        if not rom in self.title_for_rom:
-            print('Unknown, skipping')
-            return
-        if rom in BLACK_LIST:
-            print('Blacklisted, skipping')
-            return
-        snap_path = self.download_snap(rom)
-        self.create_desktop(rom, snap_path)
+    def get_snap_url(self, rom):
+        return SNAPS_URL.format(rom=rom)
 
-    def download_snap(self, rom):
-        snap_path = os.path.join(self.config.snaps, rom + '.png')
-        if os.path.exists(snap_path):
-            print('Snap has already been downloaded')
-            return snap_path
-
-        url = SNAPS_URL.format(rom=rom)
-        print('Downloading snap from {}'.format(url))
-        with urlopen(url) as srcf:
-            with open(snap_path, 'wb') as dstf:
-                dstf.write(srcf.read())
-        return snap_path
-
-    def create_desktop(self, rom, snap_path):
-        title = self.title_for_rom[rom]
-        desktop_path = os.path.join(self.config.destination, slugify(title) + '.desktop')
-        print('Generating {}'.format(desktop_path))
-        with open(desktop_path, 'w') as f:
-            f.write(DESKTOP_TEMPLATE.format(mame=self.config.mame, title=title, rom=rom, snap=snap_path))
+    def get_title(self, rom):
+        return self.title_for_rom[rom]
 
 
 def main():
@@ -97,19 +60,19 @@ def main():
     parser.add_argument('-m', '--mame', dest='mame', default='mame',
         help='Mame binary to use. defaults to mame')
 
-    parser.add_argument('-s', '--snaps', dest='snaps',
-        help='Path to the snaps dir')
+    parser.add_argument('-s', '--snap_dir', dest='snap_dir',
+        help='Path to the snap_dir dir')
 
-    parser.add_argument('-d', '--destination', dest='destination', default=os.getcwd(),
+    parser.add_argument('-d', '--desktop_dir', dest='desktop_dir', default=os.getcwd(),
         help='Destination dir, defaults to current directory')
 
     parser.add_argument('dir_or_rom_name')
 
     args = parser.parse_args()
-    if not os.path.isdir(args.snaps):
+    if not os.path.isdir(args.snap_dir):
         parser.error('Snaps dir does not exist')
 
-    config = Config(mame=args.mame, snaps=args.snaps, destination=args.destination)
+    config = desktopgenerator.Config(command=args.mame, snap_dir=args.snap_dir, desktop_dir=args.desktop_dir)
     app = App(config)
 
     if os.path.isdir(args.dir_or_rom_name):
