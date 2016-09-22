@@ -92,6 +92,7 @@ ApplicationWindow {
     }
 
     function launch() {
+        autoStartCountDown = -1;
         launcherView.currentItem.aboutToLaunch();
         launcherModel.launch(launcherView.currentIndex);
     }
