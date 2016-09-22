@@ -5,7 +5,6 @@
         <file>images/rocket.svg</file>
         <file>Style.qml</file>
         <file>qmldir</file>
-        <file>Highlight.qml</file>
         <file>images/power.svg</file>
         <file>ToastLabel.qml</file>
     </qresource>

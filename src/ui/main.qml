@@ -38,13 +38,19 @@ ApplicationWindow {
     Item {
         id: main
         anchors.fill: parent
+
         GridView {
             id: launcherView
             model: launcherModel
             anchors.fill: parent
             focus: true
-            cellWidth: Style.grid.iconSize + 3 * Style.grid.highlightSize + 2 * Style.main.textSize
-            cellHeight: cellWidth
+
+            width: cellWidth * columnCount
+
+            property int columnCount: Math.floor(main.width / (Style.grid.iconSize + 2 * Style.grid.hpadding))
+
+            cellWidth: Math.floor(main.width / columnCount)
+            cellHeight: Style.grid.iconSize + 2 * (Style.grid.innerMargin + Style.grid.outerMargin) + 3 * Style.main.textSize
 
             delegate: LauncherItem {
                 Keys.onPressed: {
@@ -54,10 +60,6 @@ ApplicationWindow {
                     launcherModel.launch(model.index);
                 }
             }
-
-            highlight: Highlight {
-            }
-            highlightMoveDuration: 200
         }
 
         ToastLabel {

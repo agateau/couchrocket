@@ -7,35 +7,55 @@ import CouchRocket 1.0
 import "."
 
 ItemDelegate {
+    id: root
     signal launchRequested
 
-    property int margin: Style.grid.highlightSize
-    property int iconSize: Style.grid.iconSize
+    width: GridView.view.cellWidth
+    height: GridView.view.cellHeight
 
-    width: column.width + 2 * margin
-    height: column.height + 2 * margin
+    Rectangle {
+        color: root.GridView.isCurrentItem ? "#555" : "#222"
+        anchors {
+            fill: parent
+            margins: Style.grid.outerMargin
+        }
+        radius: Style.grid.radius
 
-    Column {
-        id: column
-        x: margin
-        y: margin
-        width: iconSize
-        Image {
-            width: iconSize
-            sourceSize.width: iconSize
-            sourceSize.height: iconSize
-            source: model.decoration
+        Behavior on color {
+            ColorAnimation {
+                duration: 200
+            }
         }
-        Label {
-            width: iconSize
-            text: model.display
-            elide: Text.ElideRight
-            wrapMode: Text.WordWrap
-            horizontalAlignment: Qt.AlignHCenter
-            color: Style.main.textColor
-            maximumLineCount: 2
+
+    Image {
+        id: image
+        anchors {
+            top: parent.top
+            topMargin: Style.grid.innerMargin
+            horizontalCenter: parent.horizontalCenter
         }
+
+        width: Style.grid.iconSize
+        sourceSize.width: width
+        sourceSize.height: width
+        source: model.decoration
     }
+
+    Label {
+        anchors {
+            top: image.bottom
+            horizontalCenter: parent.horizontalCenter
+        }
+        width: parent.width
+        text: model.display
+        elide: Text.ElideRight
+        wrapMode: Text.WordWrap
+        horizontalAlignment: Qt.AlignHCenter
+        color: Style.main.textColor
+        maximumLineCount: 2
+    }
+    }
+
     MouseArea {
         anchors.fill: parent
         onClicked: {

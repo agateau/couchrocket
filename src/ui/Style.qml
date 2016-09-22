@@ -13,8 +13,10 @@ QtObject {
 
     property QtObject grid: QtObject {
         property int iconSize: 256
-        property int highlightSize: 12
-        property int highlightRadius: 6
+        property int hpadding: 36
+        property int outerMargin: 2
+        property int innerMargin: 4
+        property int radius: 3
     }
 
     property QtObject toast: QtObject {
