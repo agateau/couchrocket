@@ -5,7 +5,12 @@
 #include <QIcon>
 #include <QPainter>
 
-static QPixmap scalePix(const QPixmap &fg_, const QSize &size)
+static constexpr char UNKNOWN_IMAGE[] = ":/images/rocket.svg";
+
+static constexpr char FALLBACK_DIR[] = "/usr/share/pixmaps";
+static constexpr const char *FALLBACK_EXTS[] = {".svg", ".png", ".xpm", 0};
+
+static QPixmap scalePixmap(const QPixmap &fg_, const QSize &size)
 {
     QPixmap fg = fg_.scaled(size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
     QPixmap pix(size);
@@ -13,6 +18,32 @@ static QPixmap scalePix(const QPixmap &fg_, const QSize &size)
     QPainter painter(&pix);
     painter.drawPixmap(size.width() - fg.width(), size.height() - fg.height(), fg);
     return pix;
+}
+
+static QPixmap loadRawPixmap(const QString &id, const QSize &requestedSize)
+{
+    if (QFile::exists(id)) {
+        QPixmap pix = QPixmap(id);
+        if (!pix.isNull()) {
+            return pix;
+        }
+    }
+
+    QIcon icon = QIcon::fromTheme(id);
+    if (!icon.isNull()) {
+        return icon.pixmap(requestedSize);
+    }
+
+    QString dir = QString(FALLBACK_DIR) + '/';
+    for (auto ext = FALLBACK_EXTS; *ext != 0; ++ext) {
+        QString path = dir + id + *ext;
+        QPixmap pix(path);
+        if (!pix.isNull()) {
+            return pix;
+        }
+    }
+
+    return QPixmap(UNKNOWN_IMAGE);
 }
 
 IconPixmapProvider::IconPixmapProvider()
@@ -23,22 +54,10 @@ IconPixmapProvider::IconPixmapProvider()
 
 QPixmap IconPixmapProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    QPixmap pix;
-    if (QFile::exists(id)) {
-        pix.load(id);
-    } else {
-        QIcon icon = QIcon::fromTheme(id);
-        if (icon.isNull()) {
-            icon = QIcon::fromTheme("applications-system");
-        }
-        pix = icon.pixmap(requestedSize);
-    }
-    if (pix.isNull()) {
-        pix.load(":/images/rocket.svg");
-    }
+    QPixmap pix = loadRawPixmap(id, requestedSize);
 
     if (pix.size() != requestedSize) {
-        pix = scalePix(pix, requestedSize);
+        pix = scalePixmap(pix, requestedSize);
     }
     if (size) {
         *size = pix.size();
