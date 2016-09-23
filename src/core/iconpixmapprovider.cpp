@@ -5,7 +5,7 @@
 #include <QIcon>
 #include <QPainter>
 
-static constexpr char UNKNOWN_IMAGE[] = ":/images/rocket.svg";
+static constexpr char UNKNOWN_IMAGE[] = ":/images/broken.svg";
 
 static constexpr char FALLBACK_DIR[] = "/usr/share/pixmaps";
 static constexpr const char *FALLBACK_EXTS[] = {".svg", ".png", ".xpm", 0};

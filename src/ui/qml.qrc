@@ -7,5 +7,6 @@
         <file>qmldir</file>
         <file>images/power.svg</file>
         <file>ToastLabel.qml</file>
+        <file>images/broken.svg</file>
     </qresource>
 </RCC>
