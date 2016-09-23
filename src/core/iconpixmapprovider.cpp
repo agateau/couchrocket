@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QIcon>
+#include <QImageReader>
 #include <QPainter>
 
 static constexpr char UNKNOWN_IMAGE[] = ":/images/broken.svg";
@@ -20,13 +21,22 @@ static QPixmap scalePixmap(const QPixmap &fg_, const QSize &size)
     return pix;
 }
 
+static QPixmap loadPixmapFromPath(const QString &path, const QSize &requestedSize)
+{
+    if (!QFile::exists(path)) {
+        return QPixmap();
+    }
+    QImageReader reader(path);
+    QSize size = reader.size().scaled(requestedSize, Qt::KeepAspectRatioByExpanding);
+    reader.setScaledSize(size);
+    return QPixmap::fromImage(reader.read());
+}
+
 static QPixmap loadRawPixmap(const QString &id, const QSize &requestedSize)
 {
-    if (QFile::exists(id)) {
-        QPixmap pix = QPixmap(id);
-        if (!pix.isNull()) {
-            return pix;
-        }
+    QPixmap pix = loadPixmapFromPath(id, requestedSize);
+    if (!pix.isNull()) {
+        return pix;
     }
 
     QIcon icon = QIcon::fromTheme(id);
@@ -37,13 +47,13 @@ static QPixmap loadRawPixmap(const QString &id, const QSize &requestedSize)
     QString dir = QString(FALLBACK_DIR) + '/';
     for (auto ext = FALLBACK_EXTS; *ext != 0; ++ext) {
         QString path = dir + id + *ext;
-        QPixmap pix(path);
+        QPixmap pix = loadPixmapFromPath(path, requestedSize);
         if (!pix.isNull()) {
             return pix;
         }
     }
 
-    return QPixmap(UNKNOWN_IMAGE);
+    return loadPixmapFromPath(UNKNOWN_IMAGE, requestedSize);
 }
 
 IconPixmapProvider::IconPixmapProvider()
