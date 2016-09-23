@@ -2,12 +2,15 @@
 #include <QDir>
 #include <QFile>
 #include <QGuiApplication>
+#include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QtQml>
 
 #include <iconpixmapprovider.h>
 #include <launchermodel.h>
+
+static constexpr char ICON_THEME_CONFIG_KEY[] = "iconTheme";
 
 static QString getDefaultLauncherDir()
 {
@@ -40,6 +43,15 @@ QVariantMap parseArguments(const QCoreApplication& app)
     };
 }
 
+static void loadConfig()
+{
+    QSettings settings("couchrocket", "couchrocket");
+    QString themeName = settings.value("iconTheme").toString();
+    if (!themeName.isEmpty()) {
+        QIcon::setThemeName(themeName);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
@@ -54,6 +66,8 @@ int main(int argc, char *argv[])
         qCritical() << "launcherDir does not exist";
         return 1;
     }
+
+    loadConfig();
 
     QQmlApplicationEngine engine;
     qmlRegisterType<LauncherModel>("CouchRocket", 1, 0, "LauncherModel");
