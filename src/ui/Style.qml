@@ -8,15 +8,17 @@ QtObject {
         property color textColor: "white"
         property int textSize: 24
 
-        property color selectedColor: "#308cc6"
+        property color accentColor: "#308cc6"
     }
 
     property QtObject grid: QtObject {
         property int iconSize: 256
-        property int hpadding: 36
-        property int outerMargin: 2
-        property int innerMargin: 4
-        property int radius: 3
+        property int hpadding: 12
+        property int vpadding: 24
+        property int labelPadding: 8
+        property color labelBackgroundColor: "#222"
+        property color imageBackgroundColor: "#444"
+        property real selectedScale: 1.1
     }
 
     property QtObject toast: QtObject {

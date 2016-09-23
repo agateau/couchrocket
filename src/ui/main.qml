@@ -50,7 +50,7 @@ ApplicationWindow {
             property int columnCount: Math.floor(main.width / (Style.grid.iconSize + 2 * Style.grid.hpadding))
 
             cellWidth: Math.floor(main.width / columnCount)
-            cellHeight: Style.grid.iconSize + 2 * (Style.grid.innerMargin + Style.grid.outerMargin) + 3 * Style.main.textSize
+            cellHeight: Style.grid.iconSize + 3 * Style.main.textSize + 2 * Style.grid.vpadding
 
             delegate: LauncherItem {
                 Keys.onPressed: {

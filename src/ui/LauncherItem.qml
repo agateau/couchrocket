@@ -10,6 +10,8 @@ ItemDelegate {
     id: root
     signal launchRequested
 
+    property bool isCurrentItem: GridView.isCurrentItem
+
     width: GridView.view.cellWidth
     height: GridView.view.cellHeight
 
@@ -20,13 +22,64 @@ ItemDelegate {
         feedback.y = coord.y;
     }
 
-    Rectangle {
-        color: root.GridView.isCurrentItem ? "#555" : "#222"
-        anchors {
-            fill: parent
-            margins: Style.grid.outerMargin
+    Behavior on scale {
+        NumberAnimation {
+            duration: 200
+            easing.type: Easing.OutCubic
         }
-        radius: Style.grid.radius
+    }
+
+    states: [
+        State {
+            when: isCurrentItem
+            PropertyChanges {
+                target: root
+                scale: Style.grid.selectedScale
+            }
+            PropertyChanges {
+                target: labelBackground
+                color: Style.main.accentColor
+            }
+        }
+
+    ]
+
+    Rectangle {
+        id: imageBackground
+        anchors {
+            top: parent.top
+            topMargin: Style.grid.innerMargin
+            horizontalCenter: parent.horizontalCenter
+        }
+        color: Style.grid.imageBackgroundColor
+        Behavior on color {
+            ColorAnimation {
+                duration: 200
+            }
+        }
+
+        width: Style.grid.iconSize
+        height: Style.grid.iconSize
+        Image {
+            id: image
+            anchors.fill: parent
+
+            sourceSize.width: width
+            sourceSize.height: width
+            source: model.decoration
+        }
+    }
+
+    Rectangle {
+        id: labelBackground
+        anchors {
+            top: imageBackground.bottom
+            horizontalCenter: parent.horizontalCenter
+        }
+        width: imageBackground.width
+        height: label.implicitHeight + 2 * Style.grid.labelPadding
+
+        color: Style.grid.labelBackgroundColor
 
         Behavior on color {
             ColorAnimation {
@@ -34,33 +87,19 @@ ItemDelegate {
             }
         }
 
-    Image {
-        id: image
-        anchors {
-            top: parent.top
-            topMargin: Style.grid.innerMargin
-            horizontalCenter: parent.horizontalCenter
+        Label {
+            id: label
+            anchors {
+                fill: parent
+                margins: Style.grid.labelPadding
+            }
+            text: model.display
+            elide: Text.ElideRight
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Qt.AlignHCenter
+            color: Style.main.textColor
+            maximumLineCount: 2
         }
-
-        width: Style.grid.iconSize
-        sourceSize.width: width
-        sourceSize.height: width
-        source: model.decoration
-    }
-
-    Label {
-        anchors {
-            top: image.bottom
-            horizontalCenter: parent.horizontalCenter
-        }
-        width: parent.width
-        text: model.display
-        elide: Text.ElideRight
-        wrapMode: Text.WordWrap
-        horizontalAlignment: Qt.AlignHCenter
-        color: Style.main.textColor
-        maximumLineCount: 2
-    }
     }
 
     MouseArea {
