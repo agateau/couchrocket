@@ -54,7 +54,10 @@ ApplicationWindow {
         GridView {
             id: launcherView
             model: launcherModel
-            anchors.fill: parent
+            anchors {
+                fill: parent
+                topMargin: Style.grid.iconSize * (Style.grid.selectedScale - 1)
+            }
             focus: true
 
             width: cellWidth * columnCount
