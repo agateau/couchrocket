@@ -11,3 +11,4 @@ Config file is at ~/.config/couchrocket/couchrocket.conf
 Available keys:
 
 - iconTheme: Name of the icon theme to use
+- wallpaper: Path to an image to show in the background

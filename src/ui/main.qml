@@ -39,6 +39,18 @@ ApplicationWindow {
         id: main
         anchors.fill: parent
 
+        Loader {
+            active: config.wallpaper !== ""
+            anchors.fill: parent
+            sourceComponent: Component {
+                Image {
+                    source: config.wallpaper
+                    fillMode: Image.PreserveAspectCrop
+                    clip: true
+                }
+            }
+        }
+
         GridView {
             id: launcherView
             model: launcherModel

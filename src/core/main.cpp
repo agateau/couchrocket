@@ -22,6 +22,7 @@ static QVariantMap loadConfig()
         {"themeName", settings.value("iconTheme")},
         {"launcherDir", settings.value("launcherDir", getDefaultLauncherDir())},
         {"fullScreen", settings.value("fullScreen", false)},
+        {"wallpaper", QUrl::fromUserInput(settings.value("wallpaper", "").toString())}
     };
 }
 
