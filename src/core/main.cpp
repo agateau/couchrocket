@@ -10,14 +10,22 @@
 #include <iconpixmapprovider.h>
 #include <launchermodel.h>
 
-static constexpr char ICON_THEME_CONFIG_KEY[] = "iconTheme";
-
 static QString getDefaultLauncherDir()
 {
     return QDir::home().filePath(".local/share/couchrocket/launchers");
 }
 
-QVariantMap parseArguments(const QCoreApplication& app)
+static QVariantMap loadConfig()
+{
+    QSettings settings("couchrocket", "couchrocket");
+    return {
+        {"themeName", settings.value("iconTheme")},
+        {"launcherDir", settings.value("launcherDir", getDefaultLauncherDir())},
+        {"fullScreen", settings.value("fullScreen", false)},
+    };
+}
+
+static void updateConfigFromArguments(QVariantMap* config, const QCoreApplication& app)
 {
     QCommandLineParser parser;
     parser.addHelpOption();
@@ -28,27 +36,13 @@ QVariantMap parseArguments(const QCoreApplication& app)
     parser.addPositionalArgument("launcherDir", QCoreApplication::translate("main", "Launcher dir"));
     parser.process(app);
 
-    QStringList posArgs = parser.positionalArguments();
-
-    QString launcherDir;
-    if (posArgs.length() == 1) {
-        launcherDir = posArgs[0];
-    } else {
-        launcherDir = getDefaultLauncherDir();
+    if (parser.isSet("fullscreen")) {
+        (*config)["fullScreen"] = true;
     }
 
-    return {
-        {"fullScreen", parser.isSet("fullscreen")},
-        {"launcherDir", launcherDir}
-    };
-}
-
-static void loadConfig()
-{
-    QSettings settings("couchrocket", "couchrocket");
-    QString themeName = settings.value("iconTheme").toString();
-    if (!themeName.isEmpty()) {
-        QIcon::setThemeName(themeName);
+    QStringList posArgs = parser.positionalArguments();
+    if (posArgs.length() == 1) {
+        (*config)["launcherDir"] = posArgs[0];
     }
 }
 
@@ -58,20 +52,25 @@ int main(int argc, char *argv[])
     app.setApplicationName("Couch Rocket");
     app.setApplicationVersion("1.0.0");
 
-    QVariantMap args = parseArguments(app);
+    QVariantMap config = loadConfig();
+    updateConfigFromArguments(&config, app);
 
-    QString launcherDir = args["launcherDir"].toString();
+    QString launcherDir = config["launcherDir"].toString();
     qDebug() << "launcherDir:" << launcherDir;
     if (!QFile::exists(launcherDir)) {
         qCritical() << "launcherDir does not exist";
         return 1;
     }
 
-    loadConfig();
+    QString themeName = config["themeName"].toString();
+    if (!themeName.isEmpty()) {
+        QIcon::setThemeName(themeName);
+    }
+    qDebug() << "theme:" << QIcon::themeName();
 
     QQmlApplicationEngine engine;
     qmlRegisterType<LauncherModel>("CouchRocket", 1, 0, "LauncherModel");
-    engine.rootContext()->setContextProperty("config", args);
+    engine.rootContext()->setContextProperty("config", config);
     engine.addImageProvider("icon", new IconPixmapProvider);
     engine.load(QUrl("qrc:/main.qml"));
 
