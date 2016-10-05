@@ -72,7 +72,8 @@ ApplicationWindow {
                     root.autoStartCountDown = -1;
                 }
                 onLaunchRequested: {
-                    launch();
+                    launcherView.currentIndex = model.index;
+                    launchCurrentItem();
                 }
             }
         }
@@ -101,12 +102,12 @@ ApplicationWindow {
         onTriggered: {
             root.autoStartCountDown--;
             if (root.autoStartCountDown == 0) {
-                launch();
+                launchCurrentItem();
             }
         }
     }
 
-    function launch() {
+    function launchCurrentItem() {
         autoStartCountDown = -1;
         launcherView.currentItem.aboutToLaunch();
         launcherModel.launch(launcherView.currentIndex);
