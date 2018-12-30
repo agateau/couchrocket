@@ -10,7 +10,7 @@ static constexpr char BROKEN_IMAGE[] = ":/images/broken.svg";
 static constexpr char DEFAULT_IMAGE[] = ":/images/rocket.svg";
 
 static constexpr char FALLBACK_DIR[] = "/usr/share/pixmaps";
-static constexpr const char *FALLBACK_EXTS[] = {".svg", ".png", ".xpm", 0};
+static constexpr const char *FALLBACK_EXTS[] = {".svg", ".png", ".xpm", nullptr};
 
 static QPixmap scalePixmap(const QPixmap &fg_, const QSize &size)
 {
@@ -55,7 +55,7 @@ static QPixmap loadRawPixmap(const QString &id, const QSize &requestedSize)
 
     // Still no luck, look in the fallback dir
     QString dir = QString(FALLBACK_DIR) + '/';
-    for (auto ext = FALLBACK_EXTS; *ext != 0; ++ext) {
+    for (auto ext = FALLBACK_EXTS; *ext != nullptr; ++ext) {
         QString path = dir + id + *ext;
         QPixmap pix = loadPixmapFromPath(path, requestedSize);
         if (!pix.isNull()) {
