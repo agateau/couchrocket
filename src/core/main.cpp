@@ -58,8 +58,9 @@ int main(int argc, char *argv[])
 
     QString launcherDir = config["launcherDir"].toString();
     qDebug() << "launcherDir:" << launcherDir;
+    QDir(launcherDir).mkpath(".");
     if (!QFile::exists(launcherDir)) {
-        qCritical() << "launcherDir does not exist";
+        qCritical() << "launcherDir does not exist and cannot be created";
         return 1;
     }
 
