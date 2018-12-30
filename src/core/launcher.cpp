@@ -41,17 +41,40 @@ static QHash<QString, QString> readDesktopFile(QIODevice *device)
 }
 
 Launcher::Launcher(const QString &desktopFilePath)
+    : mDesktopFilePath(desktopFilePath)
+{
+    refresh();
+}
+
+
+QString Launcher::name() const
+{
+    return mName;
+}
+
+QUrl Launcher::iconUrl() const
+{
+    return mIconUrl;
+}
+
+void Launcher::launch() const
+{
+    qDebug() << "Launching" << mExec;
+    QProcess::startDetached(mExec);
+}
+
+void Launcher::refresh()
 {
     QHash<QString, QString> hash;
     {
-        QFile file(desktopFilePath);
+        QFile file(mDesktopFilePath);
         if (!file.open(QIODevice::ReadOnly)) {
-            qWarning() << "Cannot read" << desktopFilePath;
+            qWarning() << "Cannot read" << mDesktopFilePath;
             return;
         }
         hash = readDesktopFile(&file);
         if (hash.isEmpty()) {
-            qWarning() << desktopFilePath << "contains no .desktop entries";
+            qWarning() << mDesktopFilePath << "contains no .desktop entries";
             return;
         }
     }
@@ -63,20 +86,4 @@ Launcher::Launcher(const QString &desktopFilePath)
     mExec.replace("%U", "");
     mExec.replace("%f", "");
     mExec.replace("%F", "");
-}
-
-
-QString Launcher::name() const
-{
-    return mName;
-}
-QUrl Launcher::iconUrl() const
-{
-    return mIconUrl;
-}
-
-void Launcher::launch() const
-{
-    qDebug() << "Launching" << mExec;
-    QProcess::startDetached(mExec);
 }

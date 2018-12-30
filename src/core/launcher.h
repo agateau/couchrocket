@@ -14,7 +14,10 @@ public:
 
     void launch() const;
 
+    void refresh();
+
 private:
+    const QString mDesktopFilePath;
     QString mName;
     QUrl mIconUrl;
     QString mExec;

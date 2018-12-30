@@ -2,9 +2,15 @@
 #define LAUNCHERMODEL_H
 
 #include <QAbstractListModel>
+#include <QHash>
 #include <QList>
 
+#include <memory>
+#include <map>
+
 #include <launcher.h>
+
+class QFileSystemWatcher;
 
 class LauncherModel : public QAbstractListModel
 {
@@ -28,8 +34,12 @@ Q_SIGNALS:
     void pathChanged(const QString &path);
 
 private:
+    QFileSystemWatcher *mWatcher;
     QString mPath;
-    QList<Launcher> mLaunchers;
+    QStringList mFileNames;
+    std::map<QString, std::unique_ptr<Launcher>> mLauncherByFileName;
+
+    const Launcher *getLauncherAtRow(int row) const;
 
     void readDir();
 };
