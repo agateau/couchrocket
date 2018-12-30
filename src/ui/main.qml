@@ -20,8 +20,6 @@ ApplicationWindow {
     color: Style.main.backgroundColor
     font.pixelSize: Style.main.textSize
 
-    property int autoStartCountDown: 5
-
     Component.onCompleted: {
         if (config.fullScreen) {
             showFullScreen();
@@ -68,47 +66,15 @@ ApplicationWindow {
             cellHeight: Style.grid.iconSize + 3 * Style.main.textSize + 2 * Style.grid.vpadding
 
             delegate: LauncherItem {
-                Keys.onPressed: {
-                    root.autoStartCountDown = -1;
-                }
                 onLaunchRequested: {
                     launcherView.currentIndex = model.index;
                     launchCurrentItem();
                 }
             }
         }
-
-        ToastLabel {
-            id: countDownToast
-            visible: false
-            states: [
-                State {
-                    name: "countDown"
-                    when: root.autoStartCountDown >= 0 && launcherView.count > 0
-                    PropertyChanges {
-                        target: countDownToast
-                        visible: true
-                        text: qsTr("Starting %1 in %2...").arg(launcherModel.get(0).display).arg(root.autoStartCountDown)
-                    }
-                }
-            ]
-        }
-    }
-
-    Timer {
-        interval: 1000
-        repeat: root.autoStartCountDown > 0
-        running: true
-        onTriggered: {
-            root.autoStartCountDown--;
-            if (root.autoStartCountDown == 0) {
-                launchCurrentItem();
-            }
-        }
     }
 
     function launchCurrentItem() {
-        autoStartCountDown = -1;
         launcherView.currentItem.aboutToLaunch();
         launcherModel.launch(launcherView.currentIndex);
     }
